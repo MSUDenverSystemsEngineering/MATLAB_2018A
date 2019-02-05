@@ -125,9 +125,16 @@ Try {
 		Show-InstallationProgress
 
 		## <Perform Pre-Installation tasks here>
+		## Uninstalls previous version
 		If ( Test-Path "$envProgramFiles\MATLAB\R2017a") {
 				Execute-Process -Path "$envProgramFiles\MATLAB\R2017a\uninstall\bin\win64\uninstall.exe" -Parameters "-inputFile `"$dirSupportFiles\2017uninstaller_input.txt`"" -PassThru
 		}
+		## Cleans up a 2018 install that did not complete so it can reinstall
+		If ( Test-Path "$envProgramFiles\MATLAB\R2018a") {
+					Get-ChildItem -Path "$envProgramFiles\MATLAB\R2018a" -Recurse | Remove-Item -force -recurse
+					Remove-Item "$envProgramFiles\MATLAB\R2018a" -Force
+		}
+		## Adds path to put license file into before install
 		If (-not (Test-Path "$envProgramFiles\MATLAB\R2018a")) {
 				New-Folder -Path "$envProgramFiles\MATLAB\R2018a"
 		}
